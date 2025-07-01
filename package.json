@@ -1,0 +1,23 @@
+{
+  "name": "codeial",
+  "version": "1.0.0",
+  "description": "my all social media application",
+  "keywords": [
+    "social"
+  ],
+  "license": "ISC",
+  "author": "Pranit",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-ejs-layouts": "^2.5.1",
+    "mongoose": "^8.16.1"
+  }
+}
