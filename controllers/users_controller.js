@@ -33,6 +33,13 @@ module.exports.signIp = function(req, res) {
     });
 };
 
+// Sign out
+
+module.exports.signOut = function(req, res) {
+    res.clearCookie('user_id');
+    return res.redirect('/users/sign-in');
+};
+
 
 // Create New User
 module.exports.create = async function(req, res) {
@@ -60,5 +67,25 @@ module.exports.create = async function(req, res) {
 // Create Session (Login)
 module.exports.createSession = async function(req, res) {
     
-   //TODO LATER
+    try {
+        const user = await User.findOne({ email: req.body.email });
+
+        if (user) {
+            if (user.password !== req.body.password) {
+                return res.redirect('/users/sign-in');
+            }
+
+            res.cookie('user_id', user.id);
+            return res.redirect('/users/profile');
+        } else {
+            return res.redirect('/users/sign-in');
+
+        }
+
+    } catch (err) {
+        console.log('Error in signing in:', err);
+        return res.status(500).send('Internal Server Error');
+    }
+
+
 };
