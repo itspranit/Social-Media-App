@@ -21,6 +21,9 @@ module.exports.profile = async function(req, res) {
 
 // Sign Up Page
 module.exports.signUp = function(req, res) {
+    if(req.isAuthenticated()){
+        return res.redirect('/users/profile');
+    }
     return res.render('user_sign_up', {
         title: "Codial | Sign Up"
     });
@@ -28,6 +31,9 @@ module.exports.signUp = function(req, res) {
 
 // Sign In Page
 module.exports.signIp = function(req, res) {
+    if(req.isAuthenticated()){
+        return res.redirect('/users/profile');
+    }
     return res.render('user_sign_in', {
         title: "Codial | Sign In"
     });
@@ -60,5 +66,10 @@ module.exports.create = async function(req, res) {
 // Create Session (Login)
 module.exports.createSession = async function(req, res) {
     
-   //TODO LATER
+   return res.redirect('/');
 };
+
+module.exports.destroySession=function(req,res){
+    req.logout();//function given by passport
+  return res.redirect('/');
+}
