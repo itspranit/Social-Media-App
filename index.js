@@ -9,7 +9,15 @@ const session=require('express-session');
 const passport=require('passport');
 const passportLocal=require('./config/passport-local-strategy');
 const MongoStore=require('connect-mongo')(sesson);//requires a argument session because we need to store session info 
+const sassMiddleware=require('sass-middleware');
 
+app.use(sassMiddleware({
+    src:'./assets/scss ',//from where do i get the scss files
+    dest:'. /assets/css',
+    debug:true,//display errors in terminal if encoutered during compilation?
+    outputStyle:'extended',//do i want evry thing insingle lines or multiple lines?multiple lines
+    prefix:'/css'//where should my server look for css files
+}));
 app.use(express.urlencoded());
 
 app.use(cookieParser());
@@ -26,8 +34,8 @@ app.set('views','./views');
 
 //mongo store is used to store session cookie in the db
 app.use(session({
-    name:'codial',
-    secret:'blahsomething',
+    name:'codial', //name of session cookie
+    secret:'blahsomething',//used to encrypt data
     //do i want to store data  of user that has not logged in?
     saveUninitialized:false,
     //do i want to ssave unchanged data repeatedly?

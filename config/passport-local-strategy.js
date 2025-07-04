@@ -44,7 +44,8 @@ passport.checkAuthentication = function(req, res, next) {
     // if the user is not signed in
     return res.redirect('/users/sign-in');
 };
-
+//we need to access the authenticated user in the views so we set the user as local user so that we can access it in the ejs files
+//it is a middleware
 passport.setAuthenticatedUser = function(req, res, next) {
     if (req.isAuthenticated()) {
         // req.user contains the current signed in user from the session cookie 

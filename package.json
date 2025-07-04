@@ -20,6 +20,7 @@
     "express-ejs-layouts": "^2.5.1",
     "mongoose": "^8.16.1",
     "passport": "^0.7.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "sass-middleware": "^0.0.3"
   }
 }
