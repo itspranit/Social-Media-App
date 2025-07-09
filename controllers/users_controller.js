@@ -24,6 +24,15 @@ module.exports.profile = async function(req, res) {
         return res.status(500).send('Internal Server Error');
     }
 };
+module.exports.update=function(req,res){
+    if(req.user.id==req.params.id){
+        User.findByIdAndUpdate(req.params.id,req.body,function(err,user){
+            return res.redirect('back');
+        })
+    }else{
+        res.status(401).send('Unauthorised');
+    }
+}
 
 // Sign Up Page
 module.exports.signUp = function(req, res) {
