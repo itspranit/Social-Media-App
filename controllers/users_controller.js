@@ -2,6 +2,12 @@ const User = require('../models/user');
 
 // Profile Page
 module.exports.profile = async function(req, res) {
+        User.findById(req.params.id,function(err,user){
+            return res.render('user_profile',{
+                title:'User Profile',
+                profile_user:user
+        });
+        });
     try {
         if (req.cookies.user_id) {
             const user = await User.findById(req.cookies.user_id);
