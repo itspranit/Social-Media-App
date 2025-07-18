@@ -1,7 +1,9 @@
-<h1>Codial / <%= title %></h1>
+<link rel="stylesheet" href="/css/home.css">
+<div id="home-container">
+
 <section id="feed-posts">
     <h4>Posts</h4>
-    <% if (locals.user) {%>
+    <% if (locals.user) { %>
     <form action="" id="new-post-form" method="POST">
         <textarea name="content" cols="30" rows="3" placeholder="type here.." required></textarea>
         <input type="submit" name="post">
@@ -22,7 +24,8 @@
 
 <% for(u of all_users){%>
     <p>
-        <a href="/users/profile/<%= u.id %>"><%= u.name %</a>
+        <a href="/users/profile/<%= u.id %>"><%= u.name %></a>
     </p>
     <% } %>
 </section>
+</div>

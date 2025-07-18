@@ -45,7 +45,7 @@ module.exports.signUp = function(req, res) {
 };
 
 // Sign In Page
-module.exports.signIp = function(req, res) {
+module.exports.signIn = function(req, res) {
     if(req.isAuthenticated()){
         return res.redirect('/users/profile');
     }
@@ -79,9 +79,8 @@ module.exports.create = async function(req, res) {
 };
 
 // Create Session (Login)
-module.exports.createSession = async function(req, res) {
-    
-   return res.redirect('/');
+module.exports.createSession = function(req, res) {
+    return res.redirect('/users/profile/' + req.user._id);
 };
 
 module.exports.destroySession=function(req,res){

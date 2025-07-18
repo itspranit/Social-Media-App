@@ -1,70 +1,73 @@
-const express=require('express');
-const cookieParser=require('cookie-parser')
-const app=express();
-const port=8000;//default is 80
-const expressLayouts=require('express-ejs-layouts');
-const db=require('./config/mongoose');
-//used for session cookie
-const session=require('express-session');
-const passport=require('passport');
-const passportLocal=require('./config/passport-local-strategy');
-const MongoStore=require('connect-mongo')(sesson);//requires a argument session because we need to store session info 
-const sassMiddleware=require('sass-middleware');
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const expressLayouts = require('express-ejs-layouts');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+const passport = require('passport');
+const passportLocal = require('./config/passport-local-strategy');
+const db = require('./config/mongoose');
+const sassMiddleware = require('sass-middleware');
 
+const app = express();
+const port = 8000;
+
+// Sass middleware (for SCSS to CSS compilation)
 app.use(sassMiddleware({
-    src:'./assets/scss ',//from where do i get the scss files
-    dest:'. /assets/css',
-    debug:true,//display errors in terminal if encoutered during compilation?
-    outputStyle:'extended',//do i want evry thing insingle lines or multiple lines?multiple lines
-    prefix:'/css'//where should my server look for css files
+    src: './assets/scss',        // Source of SCSS files
+    dest: './assets/css',        // Output destination
+    debug: true,                 // Log compile errors
+    outputStyle: 'extended',     // Readable CSS
+    prefix: '/css'               // URL prefix for CSS
 }));
-app.use(express.urlencoded());
 
+// Parse URL-encoded data and cookies
+app.use(express.urlencoded());
 app.use(cookieParser());
 
+// Static files and layouts
 app.use(express.static('./assets'));
 app.use(expressLayouts);
 
-app.set('layout extractStyles',true);
-app.set('layout extractScripts',true);
+// Extract styles and scripts from subpages into layout
+app.set('layout extractStyles', true);
+app.set('layout extractScripts', true);
 
+// View engine setup
+app.set('view engine', 'ejs');
+app.set('views', './views');
 
-app.set('view engine','ejs');
-app.set('views','./views');
-
-//mongo store is used to store session cookie in the db
+// Session middleware with MongoDB store
 app.use(session({
-    name:'codial', //name of session cookie
-    secret:'blahsomething',//used to encrypt data
-    //do i want to store data  of user that has not logged in?
-    saveUninitialized:false,
-    //do i want to ssave unchanged data repeatedly?
-    resave:false,
-    cookie:{
-        maxAge:(1000*60*100)
+    name: 'codeial',                       // Name of the cookie
+    secret: 'blahsomething',              // Secret for signing session ID
+    saveUninitialized: false,
+    resave: false,
+    cookie: {
+        maxAge: 1000 * 60 * 100  ,// Session expiry (100 mins)
+        secure:false, 
+        sameSite: 'lax'          
     },
-    store:new MongoStore({
-        
-            mongooseConnection:db,
-            autoRemove:'disabled'
-        
-    },
-    function(err){
-        console.log(err||'connect-mongodb setup ok')
-    }
-)
+    store: MongoStore.create({
+        mongoUrl: 'mongodb://127.0.0.1:27017/codeial_db',
+        autoRemove: 'disabled'
+    })
 }));
 
+// Initialize Passport and session handling
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Set authenticated user in views
 app.use(passport.setAuthenticatedUser);
-app.use('/',require('./routes'));
 
 
-app.listen(port,function(err){
-    if(err){
+// Routes
+app.use('/', require('./routes'));
+
+// Start server
+app.listen(port, function (err) {
+    if (err) {
         console.log(`Error in running server: ${err}`);
     }
-    console.log(`Server is running on port:${port}`);
+    console.log(`Server is running on port: ${port}`);
 });

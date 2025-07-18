@@ -1,58 +1,56 @@
-const passport=require('passport');
-const LocalStrategy=require('passport-local').Strategy;//?
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const User = require('../models/user'); // Adjust path if needed
 
+// Use Local Strategy with async/await
 passport.use(new LocalStrategy({
-    username:'email'
-},
-   function(email,password,done){
-    User.findOne({email:email},function(err,user){
-        if(err){
-            console.log('error in finding user -->passport');
-            return done(err);
-        }
-        if(!user || user.password!=password){
-            console.log('invalid username or password');
-            return done(null,false);
-        }
-        return done(null,user);
-    });
-   } 
-));
+    usernameField: 'email'
+}, async function(email, password, done) {
+    try {
+        const user = await User.findOne({ email: email });
 
-// serialize
-passport.serializeUser(function(user,done){
-    done(null,user.id);
+        if (!user || user.password !== password) {
+            console.log('Invalid username or password');
+            return done(null, false);
+        }
+
+        return done(null, user);
+    } catch (err) {
+        console.log('Error in finding user --> passport');
+        return done(err);
+    }
+}));
+
+// Serialize user
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
 });
 
-//deserialize
-passport.deserializeUser(function(id,done){
-    User.findById(id,function(err,user){
-        if(err){
-            console.log('error in finding user -->passport');
-            return done(err);
-        }
-        return done(null,user);
-    });
+// Deserialize user with async/await
+passport.deserializeUser(async function(id, done) {
+    try {
+        const user = await User.findById(id);
+        return done(null, user);
+    } catch (err) {
+        console.log('Error in finding user --> passport');
+        return done(err);
+    }
 });
-// check if the user is authenticated
+
+// Middleware to check authentication
 passport.checkAuthentication = function(req, res, next) {
-    // if the user is signed in, then pass on the request to the next function (controller's action)
     if (req.isAuthenticated()) {
         return next();
     }
-
-    // if the user is not signed in
     return res.redirect('/users/sign-in');
 };
-//we need to access the authenticated user in the views so we set the user as local user so that we can access it in the ejs files
-//it is a middleware
+
+// Middleware to set authenticated user in res.locals
 passport.setAuthenticatedUser = function(req, res, next) {
     if (req.isAuthenticated()) {
-        // req.user contains the current signed in user from the session cookie 
-        // and we are just sending the user to the locals for the views
         res.locals.user = req.user;
     }
     next();
 };
 
-module.exports=passport;
+module.exports = passport;
