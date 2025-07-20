@@ -2,28 +2,22 @@ const User = require('../models/user');
 
 // Profile Page
 module.exports.profile = async function(req, res) {
-        User.findById(req.params.id,function(err,user){
-            return res.render('user_profile',{
-                title:'User Profile',
-                profile_user:user
-        });
-        });
     try {
-        if (req.cookies.user_id) {
-            const user = await User.findById(req.cookies.user_id);
-            if (user) {
-                return res.render('user_profile', {
-                    title: "User Profile",
-                    user: user
-                });
-            }
+        const user = await User.findById(req.params.id);
+        if (user) {
+            return res.render('user_profile', {
+                title: "User Profile",
+                profile_user: user
+            });
+        } else {
+            return res.status(404).send("User not found");
         }
-        return res.redirect('/users/sign-in');
     } catch (err) {
         console.log('Error fetching user profile:', err);
         return res.status(500).send('Internal Server Error');
     }
 };
+
 module.exports.update=function(req,res){
     if(req.user.id==req.params.id){
         User.findByIdAndUpdate(req.params.id,req.body,function(err,user){
@@ -80,10 +74,14 @@ module.exports.create = async function(req, res) {
 
 // Create Session (Login)
 module.exports.createSession = function(req, res) {
+    req.flash('success','Logged in successfully');
     return res.redirect('/users/profile/' + req.user._id);
 };
 
-module.exports.destroySession=function(req,res){
-    req.logout();//function given by passport
-  return res.redirect('/');
-}
+
+module.exports.destroySession = function (req, res, next) {
+    req.logout();
+    req.flash('success','Logged out successfully');
+
+    return res.redirect('/');
+};

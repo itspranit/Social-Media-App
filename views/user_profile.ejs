@@ -4,16 +4,16 @@
 </h1>
 
 
-<% if(user.id == profile_user.id){%>
-   <!--if user matches show th eform--> 
+<% if (typeof user !== 'undefined' && user.id == profile_user.id) { %>
+ <!--if user matches show th eform--> 
    <form action="/users/update/<%= profile_user.id %>" method="POST">
     <input type="text" name="name" placeholder="your name " value="<%= profile_user.name %>" required>
-    <input type="email" name="name" placeholder="your email " value="<%= profile_user.email %>" required>
+    <input type="email" name="email" placeholder="your email " value="<%= profile_user.email %>" required>
     <input type="submit" value="update">
 </form>
     <%}else{%>
     <!--else show only profile info-->
-    <p>Name: <%= profile_useruser.name %></p>
+    <p>Name: <%= profile_user.name %></p>
     <p>Email: <%= profile_user.email %></p>
         <%}%>
   

@@ -1,18 +1,17 @@
 <header>
-    Page Header
+    <h2>Page Header</h2>
     <ul>
         <% if (locals.user) { %>
-            <li><a href="/users/profile"><%= user.name %></a></li>
+            <li><a href="/users/profile/<%= user._id %>">Profile</a></li>
             <li>
-                <a href="/users/sign-out">Sign Out</a>
+                <!-- Sign out via POST (better for security) -->
+                <form id="logout-form" action="/users/sign-out" method="POST" style="display: inline;">
+                    <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">Sign Out</a>
+                </form>
             </li>
         <% } else { %>
-            <li>
-                <a href="/users/sign-in">Sign In</a>
-            </li>
-            <li>
-                <a href="/users/sign-up">Sign Up</a>
-            </li>
+            <li><a href="/users/sign-in">Sign In</a></li>
+            <li><a href="/users/sign-up">Sign Up</a></li>
         <% } %>
     </ul>
 </header>

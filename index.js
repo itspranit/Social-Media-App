@@ -7,7 +7,8 @@ const passport = require('passport');
 const passportLocal = require('./config/passport-local-strategy');
 const db = require('./config/mongoose');
 const sassMiddleware = require('sass-middleware');
-
+const flash=require('connect-flash');//used with session,uses session cookies
+const customMware=require('./config/middleware');
 const app = express();
 const port = 8000;
 
@@ -60,7 +61,8 @@ app.use(passport.session());
 // Set authenticated user in views
 app.use(passport.setAuthenticatedUser);
 
-
+app.use(flash());
+app.use(customMware.setFlash);
 // Routes
 app.use('/', require('./routes'));
 
